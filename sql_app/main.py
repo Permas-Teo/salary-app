@@ -69,7 +69,8 @@ def validateCSV(df):
 def create_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
     if db_user:
-        raise HTTPException(status_code=400, detail="Id already registered")
+        return crud.update_user(db=db, user=user)
+        # raise HTTPException(status_code=400, detail="Id already registered")
     return crud.create_user(db=db, user=user)
 
 
