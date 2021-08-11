@@ -2,7 +2,7 @@ from typing import Optional, List
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
-from pandas.errors import EmptyDataError
+from pandas.errors import EmptyDataError, ParserError
 
 import pandas as pd
 from io import StringIO
@@ -55,15 +55,18 @@ def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_d
         df = pd.read_csv(StringIO(str(file.file.read(), 'utf-8')), encoding='utf-8')
     except EmptyDataError:
         raise HTTPException(status_code=400, detail="Empty file detected")
+    except ParserError:
+        raise HTTPException(status_code=422, detail="Error tokenizing csv data.")
 
     df = utils.filterDf(df)
 
-    if not utils.validateCSV(df):
-        raise HTTPException(status_code=422, detail="Duplicate id/login detected")
+    res = utils.validateCSV(df)
+    if res:
+        raise HTTPException(status_code=422, detail=res)
 
     try:
         crud.updateDb(db, df)
         return "Success"
     except exc.IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=422, detail="Data validation failed")
+        raise HTTPException(status_code=422, detail="Database integrity validation failed")

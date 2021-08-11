@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # Utility
 def filterDf(df):
     return df[~df['id'].str.contains("#")] 
@@ -9,11 +10,10 @@ def filterDf(df):
 def validateCSV(df):
     noDuplicatesId = {}
     noDuplicatesLogin = {}
+    print(df)
     for index, row in df.iterrows():
         currId = row["id"]
         currLogin = row["login"]
-        currName = row["name"]
-        currSalary = row["salary"]
 
         # Check all values not NAN
         # if (pd.isna(currId) or pd.isna(currLogin) or pd.isna(currName) or pd.isna(currSalary)):
@@ -30,12 +30,12 @@ def validateCSV(df):
         if currId not in noDuplicatesId:
             noDuplicatesId[currId] = True
         else:
-            return False
+            return "Duplicate id detected in csv file"
         
         # Check duplicates for login
         if currLogin not in noDuplicatesLogin:
             noDuplicatesLogin[currLogin] = True
         else:
-            return False
+            return "Duplicate login detected in csv file"
 
-    return True
+    return False
