@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 
 from . import crud, models, schemas
@@ -43,3 +43,9 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
+
+@app.post("/users/upload")
+async def create_upload_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    print(contents)
+    return {"filename": file.filename}
