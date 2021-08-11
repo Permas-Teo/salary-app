@@ -1,7 +1,9 @@
 from typing import Optional, List
-
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
+
+import pandas as pd
+from io import StringIO
 
 from . import crud, models, schemas
 from .database import SessionLocal, engine
@@ -46,6 +48,6 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @app.post("/users/upload")
 async def create_upload_file(file: UploadFile = File(...)):
-    contents = await file.read()
-    print(contents)
+    df = pd.read_csv(StringIO(str(file.file.read(), 'utf-8')), encoding='utf-8')
+    print(df)
     return {"filename": file.filename}
