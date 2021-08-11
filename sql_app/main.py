@@ -2,6 +2,7 @@ from typing import Optional, List
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from sqlalchemy.orm import Session
 from sqlalchemy import exc
+from pandas.errors import EmptyDataError
 
 import pandas as pd
 from io import StringIO
@@ -50,7 +51,11 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @app.post("/users/upload")
 def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    df = pd.read_csv(StringIO(str(file.file.read(), 'utf-8')), encoding='utf-8')
+    try:
+        df = pd.read_csv(StringIO(str(file.file.read(), 'utf-8')), encoding='utf-8')
+    except EmptyDataError:
+        raise HTTPException(status_code=400, detail="Empty file detected")
+
     df = utils.filterDf(df)
 
     if not utils.validateCSV(df):
