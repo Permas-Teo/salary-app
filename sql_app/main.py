@@ -16,7 +16,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Welcome to salary-app sql server!"}
 
 # Dependency
 def get_db():
@@ -32,7 +32,6 @@ def create_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
     if db_user:
         return crud.update_user(db=db, user=user)
-        # raise HTTPException(status_code=400, detail="Id already registered")
     return crud.create_user(db=db, user=user)
 
 
@@ -43,7 +42,7 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @app.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
+def read_user(user_id: str, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")

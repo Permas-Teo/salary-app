@@ -10,7 +10,6 @@ def filterDf(df):
 def validateCSV(df):
     noDuplicatesId = {}
     noDuplicatesLogin = {}
-    print(df)
     for index, row in df.iterrows():
         currId = row["id"]
         currLogin = row["login"]
