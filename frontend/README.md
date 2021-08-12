@@ -1,5 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Credits
+
+Navigation Bar component referenced from https://chakra-templates.dev/
+
 ## Available Scripts
 
 In the project directory, you can run:
