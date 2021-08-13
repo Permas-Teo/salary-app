@@ -1,7 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Box,
   Button,
+  CloseButton,
   Container,
   Heading,
   List,
@@ -21,6 +26,7 @@ import { CheckIcon } from '@chakra-ui/icons';
 
 export const FileUpload = () => {
   const [filesToSend, setFilesToSend] = useState([]);
+  const [status, setStatus] = useState('');
 
   function onDrop(acceptedFiles) {
     // setFilesToSend(old => [...old, ...acceptedFiles]);
@@ -56,48 +62,78 @@ export const FileUpload = () => {
   );
 
   return (
-    <Container
-      maxW={'md'}
-      bg={'whiteAlpha.100'}
-      boxShadow={'xl'}
-      rounded={'lg'}
-      p={6}
-      my={2}
-      direction={'column'}
-    >
-      <Heading
-        as={'h2'}
-        fontSize={{ base: 'xl', sm: '2xl' }}
-        textAlign={'center'}
-        my={5}
-      >
-        CSV Upload
-      </Heading>
-      <Box {...getRootProps({ style })} m={2}>
-        <input {...getInputProps()} />
-        <Text>Drag and drop / Click here to upload csv file</Text>
-      </Box>
-      <VStack>
-        <List py={2}>{files}</List>
-        <Button
-          onClick={() => {
-            const fileToSend = acceptedFiles[0];
-            const formData = new FormData();
-            formData.append(`file`, fileToSend);
-            fetch(API_URL + '/users/upload', {
-              method: 'POST',
-              body: formData,
-            })
-              .then(response => response.json())
-              .then(success => console.log(success))
-              .catch(error => console.log(error));
+    <>
+      {status && status === 'Success' && (
+        <Alert variant="solid" status="success">
+          <AlertIcon />
+          <AlertTitle mr={2}>File uploaded succesfully!</AlertTitle>
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() => setStatus('')}
+          />
+        </Alert>
+      )}
 
-            setFilesToSend([]);
-          }}
+      {status && status !== 'Success' && (
+        <Alert variant="solid" status="error">
+          <AlertIcon />
+          <AlertTitle mr={2}>Error!</AlertTitle>
+          <AlertDescription>{status}</AlertDescription>
+          <CloseButton
+            position="absolute"
+            right="8px"
+            top="8px"
+            onClick={() => setStatus('')}
+          />
+        </Alert>
+      )}
+
+      <Container
+        maxW={'md'}
+        bg={'whiteAlpha.100'}
+        boxShadow={'xl'}
+        rounded={'lg'}
+        p={6}
+        my={2}
+        direction={'column'}
+      >
+        <Heading
+          as={'h2'}
+          fontSize={{ base: 'xl', sm: '2xl' }}
+          textAlign={'center'}
+          my={5}
         >
-          Upload
-        </Button>
-      </VStack>
-    </Container>
+          CSV Upload
+        </Heading>
+        <Box {...getRootProps({ style })} m={2}>
+          <input {...getInputProps()} />
+          <Text>Drag and drop / Click here to upload csv file</Text>
+        </Box>
+        <VStack>
+          <List py={2}>{files}</List>
+          <Button
+            onClick={() => {
+              const fileToSend = acceptedFiles[0];
+              const formData = new FormData();
+              formData.append(`file`, fileToSend);
+              fetch(API_URL + '/users/upload', {
+                method: 'POST',
+                body: formData,
+              })
+                .then(response => response.json())
+                .then(res => {
+                  console.log(res.detail);
+                  setStatus(res.detail);
+                });
+              setFilesToSend([]);
+            }}
+          >
+            Upload
+          </Button>
+        </VStack>
+      </Container>
+    </>
   );
 };

@@ -83,7 +83,7 @@ def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_d
 
     try:
         crud.updateDb(db, df)
-        return "Success"
+        return {"detail":"Success"}
     except exc.IntegrityError:
         db.rollback()
         raise HTTPException(status_code=422, detail="Database integrity validation failed")
