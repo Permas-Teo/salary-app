@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Center,
-  Container,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-} from '@chakra-ui/react';
+import { Center, Container, Heading } from '@chakra-ui/react';
 import Layout from '../components/layout';
 import { API_URL } from '../utils/constants';
+import { SalaryTable } from '../components/salaryTable';
 
 const HomePage = () => {
   const [res, setRes] = useState('');
@@ -26,17 +15,6 @@ const HomePage = () => {
         setRes(resultData);
       });
   }, []);
-
-  const generateTableRow = singleItem => {
-    return (
-      <>
-        <Td>{singleItem.id}</Td>
-        <Td>{singleItem.login}</Td>
-        <Td>{singleItem.name}</Td>
-        <Td isNumeric>{singleItem.salary}</Td>
-      </>
-    );
-  };
 
   return (
     <Layout>
@@ -60,47 +38,7 @@ const HomePage = () => {
         </Container>
       </Center>
 
-      {res ? (
-        <Center mb={6}>
-          <Container
-            maxW={'5xl'}
-            bg={'whiteAlpha.100'}
-            boxShadow={'xl'}
-            rounded={'lg'}
-            p={6}
-            direction={'column'}
-          >
-            <Box overflowX="auto">
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>ID</Th>
-                    <Th>Login</Th>
-                    <Th>Name</Th>
-                    <Th isNumeric>Salary</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {res.length > 0 && (
-                    <>
-                      {res.map(singleItem => (
-                        <Tr
-                          // cursor={"pointer"}
-                          key={singleItem.id}
-                        >
-                          {generateTableRow(singleItem)}
-                        </Tr>
-                      ))}
-                    </>
-                  )}
-                </Tbody>
-              </Table>
-            </Box>
-          </Container>
-        </Center>
-      ) : (
-        <></>
-      )}
+      {res ? <SalaryTable data={res} /> : <></>}
     </Layout>
   );
 };
