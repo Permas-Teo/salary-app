@@ -26,13 +26,17 @@ const HomePage = () => {
   const [minSalary, setMinSalary] = useState('');
   const [maxSalary, setMaxSalary] = useState('');
 
-  useEffect(() => {
+  function refresh() {
     fetch(API_URL + '/users')
       .then(response => response.json()) // parse JSON from request
       .then(resultData => {
         // console.log(resultData);
         setRes(resultData);
       });
+  }
+
+  useEffect(() => {
+    refresh();
   }, []);
 
   function handleStatusChange(status) {
@@ -133,7 +137,16 @@ const HomePage = () => {
                   </NumberInput>
                 </FormControl>
                 <Center>
-                  <Button m={2}>{'Reset'}</Button>
+                  <Button
+                    m={2}
+                    onClick={() => {
+                      setMinSalary('');
+                      setMaxSalary('');
+                      refresh();
+                    }}
+                  >
+                    {'Reset'}
+                  </Button>
                   <Button m={2} type="submit">
                     {'Calculate'}
                   </Button>
