@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import select
 from sqlalchemy import and_
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 from . import models, schemas
 
 
@@ -25,12 +25,12 @@ def get_users(db: Session,
     if sort:
         sortDirection = sort[0]
         sortField = sort[1:]
-        if sortDirection == "+":
-            query = query.order_by(sortField)
-        elif sortDirection == "-":
-            query = query.order_by(desc(sortField))        
+        if sortDirection == "-":
+            query = query.order_by(desc(sortField))
+        else:
+            query = query.order_by(asc(sortField))        
     
-    return query.offset(offset).limit(limit).all()
+    return query.limit(limit).offset(offset).all()
 
 
 def create_user(db: Session, user: schemas.User):
