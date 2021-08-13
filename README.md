@@ -38,7 +38,7 @@ In virtual environment `(venv)`, to run tests:
 
 In the **salary-app/frontend** folder, install dependencies:
 
-`pytest`
+`npm install`
 
 #### Run React webapp
 
