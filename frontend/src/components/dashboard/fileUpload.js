@@ -59,7 +59,7 @@ export const FileUpload = ({ onStatusChange }) => {
   return (
     <Container
       maxW={'md'}
-      minW={'sm'}
+      height={'270px'}
       bg={'whiteAlpha.100'}
       boxShadow={'xl'}
       rounded={'lg'}
