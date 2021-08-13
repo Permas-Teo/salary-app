@@ -54,8 +54,16 @@ def create_user(user: schemas.User, db: Session = Depends(get_db)):
 
 
 @app.get("/users/", response_model=List[schemas.User])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = crud.get_users(db, skip=skip, limit=limit)
+def read_users(offset: int = 0, 
+            limit: int = 100, 
+            minSalary: float = 0, 
+            maxSalary: float = float('inf'), 
+            sort: str = "", 
+            db: Session = Depends(get_db)):
+    try:
+        users = crud.get_users(db, offset=offset, limit=limit, minSalary=minSalary, maxSalary=maxSalary, sort=sort)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid fields")
     return users
 
 
@@ -74,6 +82,8 @@ def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_d
         raise HTTPException(status_code=400, detail="Empty file detected")
     except ParserError:
         raise HTTPException(status_code=422, detail="Error tokenizing csv data.")
+    except:
+        raise HTTPException(status_code=422, detail="Invalid fields")
 
     df = utils.filterDf(df)
 
@@ -87,3 +97,6 @@ def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_d
     except exc.IntegrityError:
         db.rollback()
         raise HTTPException(status_code=422, detail="Database integrity validation failed")
+    except:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="Invalid fields")
