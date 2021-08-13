@@ -88,17 +88,17 @@ def test_read_users():
     )
 
     response = client.get("/users/?limit=1&sort=+name")
-    data = response.json()
+    data = response.json()["results"]
     assert len(data) == 1
     assert data[0] == SAMPLE_VALID_DATA_1
 
     response = client.get("/users/?limit=1&offset=1&sort=+id")
-    data = response.json()
+    data = response.json()["results"]
     assert len(data) == 1
     assert data[0] == SAMPLE_VALID_DATA_2
 
     response = client.get("/users/?minSalary=100&maxSalary=1001&sort=-salary")
-    data = response.json()
+    data = response.json()["results"]
     assert len(data) == 2
     assert data[0] == SAMPLE_VALID_DATA_1
     assert data[1] == SAMPLE_VALID_DATA_2

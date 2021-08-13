@@ -53,9 +53,9 @@ def create_user(user: schemas.User, db: Session = Depends(get_db), status_code=2
     return crud.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[schemas.User])
+@app.get("/users/")
 def read_users(offset: int = 0, 
-            limit: int = 100, 
+            limit: int = 2, 
             minSalary: float = 0, 
             maxSalary: float = float('inf'), 
             sort: str = "", 

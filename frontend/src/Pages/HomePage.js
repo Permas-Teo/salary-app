@@ -25,19 +25,34 @@ const HomePage = () => {
   const [status, setStatus] = useState('');
   const [minSalary, setMinSalary] = useState('');
   const [maxSalary, setMaxSalary] = useState('');
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [sortToggle, setSortToggle] = useState('');
 
   function refresh() {
-    fetch(API_URL + '/users')
+    setMinSalary('');
+    setMaxSalary('');
+    setPage(0);
+
+    let params = new URLSearchParams();
+    if (sortToggle) {
+      params.append('sort', sortToggle);
+    }
+
+    fetch(API_URL + '/users?' + params.toString())
       .then(response => response.json()) // parse JSON from request
       .then(resultData => {
-        // console.log(resultData);
-        setRes(resultData);
+        console.log(resultData);
+        setRes(resultData.results);
+        setTotalPages(resultData.totalPages);
       });
   }
 
   useEffect(() => {
     refresh();
   }, []);
+
+  function reset() {}
 
   function handleStatusChange(status) {
     setStatus(status);
@@ -47,6 +62,10 @@ const HomePage = () => {
     setRes(res);
   }
 
+  function handleSortToggleChange(sortToggle) {
+    setSortToggle(sortToggle);
+  }
+
   return (
     <Layout>
       <Alerts onStatusChange={handleStatusChange} status={status} />
@@ -54,7 +73,11 @@ const HomePage = () => {
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>
-            <FileUpload onStatusChange={handleStatusChange} flex="1" />
+            <FileUpload
+              onStatusChange={handleStatusChange}
+              refresh={refresh}
+              flex="1"
+            />
           </Box>
           <Box m={2}>
             <Container
@@ -90,13 +113,18 @@ const HomePage = () => {
                   if (maxSalary) {
                     params.append('maxSalary', maxSalary);
                   }
+                  if (sortToggle) {
+                    params.append('sort', sortToggle);
+                  }
                   console.log(API_URL + '/users?' + params.toString());
 
                   fetch(API_URL + '/users?' + params.toString())
                     .then(response => response.json()) // parse JSON from request
                     .then(resultData => {
                       console.log(resultData);
-                      setRes(resultData);
+                      setRes(resultData.results);
+                      setPage(0);
+                      setTotalPages(resultData.totalPages);
                     });
                 }}
               >
@@ -144,8 +172,6 @@ const HomePage = () => {
                   <Button
                     m={2}
                     onClick={() => {
-                      setMinSalary('');
-                      setMaxSalary('');
                       refresh();
                     }}
                   >
@@ -167,6 +193,10 @@ const HomePage = () => {
           onResChange={handleResChange}
           minSalary={minSalary}
           maxSalary={maxSalary}
+          onSortToggleChange={handleSortToggleChange}
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
         />
       ) : (
         <></>

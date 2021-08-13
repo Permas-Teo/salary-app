@@ -3,6 +3,7 @@ from sqlalchemy.sql.expression import select
 from sqlalchemy import and_
 from sqlalchemy import desc, asc
 from . import models, schemas
+from math import ceil
 
 
 def get_user_by_id(db: Session, user_id: str):
@@ -11,7 +12,7 @@ def get_user_by_id(db: Session, user_id: str):
 
 def get_users(db: Session, 
             offset: int = 0, 
-            limit: int = 100, 
+            limit: int = 2, 
             minSalary: float = 0, 
             maxSalary: float = float('inf'), 
             sort: str = ""):
@@ -22,15 +23,22 @@ def get_users(db: Session,
             models.User.salary <= maxSalary)
         )
 
+    # Count total pages before cutting results
+    queryLength = (query.count())
+    totalPages = queryLength//limit + ceil((queryLength % limit) / limit)
+
     if sort:
         sortDirection = sort[0]
         sortField = sort[1:]
         if sortDirection == "-":
             query = query.order_by(desc(sortField))
         else:
-            query = query.order_by(asc(sortField))        
-    
-    return query.limit(limit).offset(offset).all()
+            query = query.order_by(asc(sortField))   
+
+    res = query.limit(limit).offset(offset).all()    
+
+    return {"results" : res,
+            "totalPages" : totalPages}
 
 
 def create_user(db: Session, user: schemas.User):
@@ -56,7 +64,7 @@ def delete_user(db: Session, user_id):
     db_user = db.query(models.User).filter(models.User.id==user_id).first()
     db.delete(db_user)
     db.commit()
-    return "Success"
+    return db_user
 
 
 def updateDb(db: Session, df):

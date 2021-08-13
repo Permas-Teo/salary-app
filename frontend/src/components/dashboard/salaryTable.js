@@ -14,14 +14,25 @@ import {
   Td,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, TriangleDownIcon, UpDownIcon } from '@chakra-ui/icons';
-import Pagination from './pagination';
-import { API_URL } from '../../utils/constants';
+import ReactPaginate from 'react-paginate';
 
-export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
+import { API_URL, ITEMS_PER_PAGE } from '../../utils/constants';
+
+export const SalaryTable = ({
+  data,
+  onResChange,
+  minSalary,
+  maxSalary,
+  onSortToggleChange,
+  totalPages,
+  setPage,
+  page,
+}) => {
   const [idToggle, setIdToggle] = useState('');
   const [loginToggle, setLoginToggle] = useState('');
   const [nameToggle, setNameToggle] = useState('');
   const [salaryToggle, setSalaryToggle] = useState('');
+  const [sortToggle, setSortToggle] = useState('');
 
   function resetAllStatus() {
     setIdToggle('');
@@ -31,32 +42,42 @@ export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
   }
 
   function toggle(status, setFunc, text) {
-    let params = new URLSearchParams();
-
     resetAllStatus();
+    let tempSortToggle = '';
+
     if (status === 'asc') {
       setFunc('desc');
-      params.append('sort', '-' + text);
+      setSortToggle('-' + text);
+      onSortToggleChange('-' + text);
+      tempSortToggle = '-' + text;
     } else if (status === 'desc') {
       setFunc('');
     } else {
       setFunc('asc');
-      params.append('sort', '+' + text);
+      setSortToggle('+' + text);
+      onSortToggleChange('+' + text);
+      tempSortToggle = '+' + text;
     }
 
+    let params = new URLSearchParams();
+    if (tempSortToggle) {
+      params.append('sort', tempSortToggle);
+    }
     if (minSalary) {
       params.append('minSalary', minSalary);
     }
     if (maxSalary) {
       params.append('maxSalary', maxSalary);
     }
-    // console.log(API_URL + '/users?' + params.toString());
+    setPage(0);
+    // params.append('offset', ITEMS_PER_PAGE * page);
+    console.log(API_URL + '/users?' + params.toString());
 
     fetch(API_URL + '/users?' + params.toString())
       .then(response => response.json()) // parse JSON from request
       .then(resultData => {
         // console.log(resultData);
-        onResChange(resultData);
+        onResChange(resultData.results);
       });
   }
 
@@ -134,10 +155,7 @@ export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
               {data.length > 0 && (
                 <>
                   {data.map(singleItem => (
-                    <Tr
-                      // cursor={"pointer"}
-                      key={singleItem.id}
-                    >
+                    <Tr key={singleItem.id}>
                       <Td>{singleItem.id}</Td>
                       <Td>{singleItem.login}</Td>
                       <Td>{singleItem.name}</Td>
@@ -150,7 +168,45 @@ export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
           </Table>
         </Box>
         <Center mt={6}>
-          <Pagination />
+          <Box>
+            <ReactPaginate
+              previousLabel={'<'}
+              nextLabel={'>'}
+              breakLabel={'...'}
+              breakClassName={'break-me'}
+              pageCount={totalPages}
+              initialPage={0}
+              forcePage={page}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={2}
+              onPageChange={({ selected }) => {
+                setPage(selected);
+                let params = new URLSearchParams();
+                if (sortToggle) {
+                  params.append('sort', sortToggle);
+                }
+                if (minSalary) {
+                  params.append('minSalary', minSalary);
+                }
+                if (maxSalary) {
+                  params.append('maxSalary', maxSalary);
+                }
+                params.append('offset', ITEMS_PER_PAGE * selected);
+                // console.log(API_URL + '/users?' + params.toString());
+
+                fetch(API_URL + '/users?' + params.toString())
+                  .then(response => response.json()) // parse JSON from request
+                  .then(resultData => {
+                    // console.log(resultData);
+                    onResChange(resultData.results);
+                  });
+                window.scrollTo(0, 0);
+              }}
+              containerClassName={'pagination'}
+              subContainerClassName={'pages pagination'}
+              activeClassName={'active'}
+            />
+          </Box>
         </Center>
       </Container>
     </Center>
