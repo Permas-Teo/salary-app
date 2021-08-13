@@ -4,15 +4,9 @@ from sqlalchemy.orm import sessionmaker
 
 from ..database import Base
 from ..main import app, get_db
+from .data.test_data import SAMPLE_VALID_DATA
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
-SAMPLE_VALID_DATA = {
-    "id":"testid",
-    "login":"testlogin",
-    "name":"testname",
-    "salary":1000.05,
-}
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
@@ -53,7 +47,7 @@ def test_create_user():
     assert "salary" in data
     assert data["salary"] == SAMPLE_VALID_DATA["salary"]
 
-def test_read_users():
+def test_read_users_basic():
     response = client.get("/users/")
     assert response.status_code == 200
 

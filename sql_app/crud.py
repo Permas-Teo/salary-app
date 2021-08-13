@@ -52,6 +52,13 @@ def update_user(db: Session, user: schemas.User):
     return db_user
 
 
+def delete_user(db: Session, user_id):
+    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+    db.delete(db_user)
+    db.commit()
+    return "Success"
+
+
 def updateDb(db: Session, df):
     for index, row in df.iterrows():
         db_user = models.User(id=row["id"], login=row["login"], name=row["name"], salary=row["salary"])
