@@ -55,7 +55,7 @@ def create_user(user: schemas.User, db: Session = Depends(get_db), status_code=2
 
 @app.get("/users/")
 def read_users(offset: int = 0, 
-            limit: int = 2, 
+            limit: int = 30, 
             minSalary: float = 0, 
             maxSalary: float = float('inf'), 
             sort: str = "", 

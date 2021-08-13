@@ -12,7 +12,7 @@ def get_user_by_id(db: Session, user_id: str):
 
 def get_users(db: Session, 
             offset: int = 0, 
-            limit: int = 2, 
+            limit: int = 30, 
             minSalary: float = 0, 
             maxSalary: float = float('inf'), 
             sort: str = ""):
