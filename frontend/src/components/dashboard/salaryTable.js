@@ -14,6 +14,7 @@ import {
   Td,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, TriangleDownIcon, UpDownIcon } from '@chakra-ui/icons';
+import Pagination from './pagination';
 import { API_URL } from '../../utils/constants';
 
 export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
@@ -148,6 +149,9 @@ export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
             </Tbody>
           </Table>
         </Box>
+        <Center mt={6}>
+          <Pagination />
+        </Center>
       </Container>
     </Center>
   );

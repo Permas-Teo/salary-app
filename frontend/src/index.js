@@ -5,6 +5,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { ChakraProvider, theme } from '@chakra-ui/react';
 
 import Routes from './routes';
+import './styles/index.css';
+
 // import reportWebVitals from './utils/reportWebVitals';
 // import * as serviceWorker from './utils/serviceWorker';
 
