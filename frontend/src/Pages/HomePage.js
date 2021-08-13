@@ -2,18 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
 import { API_URL } from '../utils/constants';
 
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Box,
-  CloseButton,
-  Container,
-  Flex,
-  Center,
-  HStack,
-} from '@chakra-ui/react';
+import { Box, Container, Flex, Center } from '@chakra-ui/react';
 
 import {
   Button,
@@ -29,6 +18,7 @@ import {
 
 import { SalaryTable } from '../components/dashboard/salaryTable';
 import { FileUpload } from '../components/dashboard/fileUpload';
+import { Alerts } from '../components/dashboard/alerts';
 
 const HomePage = () => {
   const [res, setRes] = useState('');
@@ -51,32 +41,7 @@ const HomePage = () => {
 
   return (
     <Layout>
-      {status && status === 'Success' && (
-        <Alert variant="solid" status="success">
-          <AlertIcon />
-          <AlertTitle mr={2}>File uploaded succesfully!</AlertTitle>
-          <CloseButton
-            position="absolute"
-            right="8px"
-            top="8px"
-            onClick={() => setStatus('')}
-          />
-        </Alert>
-      )}
-
-      {status && status !== 'Success' && (
-        <Alert variant="solid" status="error">
-          <AlertIcon />
-          <AlertTitle mr={2}>Error!</AlertTitle>
-          <AlertDescription>{status}</AlertDescription>
-          <CloseButton
-            position="absolute"
-            right="8px"
-            top="8px"
-            onClick={() => setStatus('')}
-          />
-        </Alert>
-      )}
+      <Alerts onStatusChange={handleStatusChange} status={status} />
 
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
