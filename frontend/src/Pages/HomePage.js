@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
-import { API_URL } from '../utils/constants';
-
 import { Box, Container, Flex, Center } from '@chakra-ui/react';
 
 import {
@@ -19,6 +17,7 @@ import {
 import { SalaryTable } from '../components/dashboard/salaryTable';
 import { FileUpload } from '../components/dashboard/fileUpload';
 import { Alerts } from '../components/dashboard/alerts';
+import { fetchUsers } from '../api/api';
 
 const HomePage = () => {
   const [res, setRes] = useState('');
@@ -34,25 +33,17 @@ const HomePage = () => {
     setMaxSalary('');
     setPage(0);
 
-    let params = new URLSearchParams();
-    if (sortToggle) {
-      params.append('sort', sortToggle);
-    }
-
-    fetch(API_URL + '/users?' + params.toString())
-      .then(response => response.json()) // parse JSON from request
-      .then(resultData => {
-        console.log(resultData);
-        setRes(resultData.results);
-        setTotalPages(resultData.totalPages);
-      });
+    let resultData = fetchUsers(sortToggle);
+    resultData.then(resultData => {
+      console.log(resultData);
+      setRes(resultData.results);
+      setTotalPages(resultData.totalPages);
+    });
   }
 
   useEffect(() => {
     refresh();
   }, []);
-
-  function reset() {}
 
   function handleStatusChange(status) {
     setStatus(status);
@@ -105,27 +96,13 @@ const HomePage = () => {
                 spacing={'12px'}
                 onSubmit={e => {
                   e.preventDefault();
-
-                  let params = new URLSearchParams();
-                  if (minSalary) {
-                    params.append('minSalary', minSalary);
-                  }
-                  if (maxSalary) {
-                    params.append('maxSalary', maxSalary);
-                  }
-                  if (sortToggle) {
-                    params.append('sort', sortToggle);
-                  }
-                  console.log(API_URL + '/users?' + params.toString());
-
-                  fetch(API_URL + '/users?' + params.toString())
-                    .then(response => response.json()) // parse JSON from request
-                    .then(resultData => {
-                      console.log(resultData);
-                      setRes(resultData.results);
-                      setPage(0);
-                      setTotalPages(resultData.totalPages);
-                    });
+                  let resultData = fetchUsers(sortToggle, minSalary, maxSalary);
+                  resultData.then(resultData => {
+                    console.log(resultData);
+                    setRes(resultData.results);
+                    setPage(0);
+                    setTotalPages(resultData.totalPages);
+                  });
                 }}
               >
                 <FormControl>

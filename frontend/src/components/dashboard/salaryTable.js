@@ -15,8 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { TriangleUpIcon, TriangleDownIcon, UpDownIcon } from '@chakra-ui/icons';
 import ReactPaginate from 'react-paginate';
-
-import { API_URL, ITEMS_PER_PAGE } from '../../utils/constants';
+import { fetchUsers } from '../../api/api';
 
 export const SalaryTable = ({
   data,
@@ -59,26 +58,12 @@ export const SalaryTable = ({
       tempSortToggle = '+' + text;
     }
 
-    let params = new URLSearchParams();
-    if (tempSortToggle) {
-      params.append('sort', tempSortToggle);
-    }
-    if (minSalary) {
-      params.append('minSalary', minSalary);
-    }
-    if (maxSalary) {
-      params.append('maxSalary', maxSalary);
-    }
-    setPage(0);
-    // params.append('offset', ITEMS_PER_PAGE * page);
-    console.log(API_URL + '/users?' + params.toString());
-
-    fetch(API_URL + '/users?' + params.toString())
-      .then(response => response.json()) // parse JSON from request
-      .then(resultData => {
-        // console.log(resultData);
-        onResChange(resultData.results);
-      });
+    let resultData = fetchUsers(tempSortToggle, minSalary, maxSalary);
+    resultData.then(resultData => {
+      console.log(resultData);
+      setPage(0);
+      onResChange(resultData.results);
+    });
   }
 
   function displayToggleIcon(status) {
@@ -181,26 +166,16 @@ export const SalaryTable = ({
               pageRangeDisplayed={2}
               onPageChange={({ selected }) => {
                 setPage(selected);
-                let params = new URLSearchParams();
-                if (sortToggle) {
-                  params.append('sort', sortToggle);
-                }
-                if (minSalary) {
-                  params.append('minSalary', minSalary);
-                }
-                if (maxSalary) {
-                  params.append('maxSalary', maxSalary);
-                }
-                params.append('offset', ITEMS_PER_PAGE * selected);
-                // console.log(API_URL + '/users?' + params.toString());
-
-                fetch(API_URL + '/users?' + params.toString())
-                  .then(response => response.json()) // parse JSON from request
-                  .then(resultData => {
-                    // console.log(resultData);
-                    onResChange(resultData.results);
-                  });
-                window.scrollTo(0, 0);
+                let resultData = fetchUsers(
+                  sortToggle,
+                  minSalary,
+                  maxSalary,
+                  selected
+                );
+                resultData.then(resultData => {
+                  console.log(resultData);
+                  onResChange(resultData.results);
+                });
               }}
               containerClassName={'pagination'}
               subContainerClassName={'pages pagination'}
