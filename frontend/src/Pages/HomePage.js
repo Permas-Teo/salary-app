@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
 import { API_URL } from '../utils/constants';
-import { SalaryTable } from '../components/salaryTable';
-import { FileUpload } from '../components/fileUpload';
+import { SalaryTable } from '../components/dashboard/salaryTable';
+import { FileUpload } from '../components/dashboard/fileUpload';
 
 const HomePage = () => {
   const [res, setRes] = useState('');

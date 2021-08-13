@@ -10,9 +10,13 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { API_URL } from '../utils/constants';
+import { API_URL } from '../../utils/constants';
 import { useDropzone } from 'react-dropzone';
-import { baseStyle, acceptStyle, rejectStyle } from '../styles/dropzone-styles';
+import {
+  baseStyle,
+  acceptStyle,
+  rejectStyle,
+} from '../../styles/dropzone-styles';
 import { CheckIcon } from '@chakra-ui/icons';
 
 export const FileUpload = () => {
