@@ -59,10 +59,10 @@ const HomePage = () => {
     fetch(API_URL + '/users')
       .then(response => response.json()) // parse JSON from request
       .then(resultData => {
-        console.log(resultData);
+        // console.log(resultData);
         setRes(resultData);
       });
-  }, []);
+  }, [res]);
 
   return (
     <Layout>
@@ -89,7 +89,24 @@ const HomePage = () => {
           </Box>
           <VStack>
             <List py={2}>{files}</List>
-            <Button onClick={() => console.log(acceptedFiles)}>Upload</Button>
+            <Button
+              onClick={() => {
+                const fileToSend = acceptedFiles[0];
+                const formData = new FormData();
+                formData.append(`file`, fileToSend);
+                fetch(API_URL + '/users/upload', {
+                  method: 'POST',
+                  body: formData,
+                })
+                  .then(response => response.json())
+                  .then(success => console.log(success))
+                  .catch(error => console.log(error));
+
+                setFilesToSend([]);
+              }}
+            >
+              Upload
+            </Button>
           </VStack>
         </Container>
       </Center>
