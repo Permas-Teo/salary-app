@@ -14,8 +14,9 @@ import {
   Td,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, TriangleDownIcon, UpDownIcon } from '@chakra-ui/icons';
+import { API_URL } from '../../utils/constants';
 
-export const SalaryTable = ({ data }) => {
+export const SalaryTable = ({ data, onResChange, minSalary, maxSalary }) => {
   const [idToggle, setIdToggle] = useState('');
   const [loginToggle, setLoginToggle] = useState('');
   const [nameToggle, setNameToggle] = useState('');
@@ -28,22 +29,41 @@ export const SalaryTable = ({ data }) => {
     setSalaryToggle('');
   }
 
-  function toggle(status, setFunc) {
+  function toggle(status, setFunc, text) {
+    let params = new URLSearchParams();
+
     resetAllStatus();
     if (status === 'asc') {
       setFunc('desc');
+      params.append('sort', '-' + text);
     } else if (status === 'desc') {
       setFunc('');
     } else {
       setFunc('asc');
+      params.append('sort', '+' + text);
     }
+
+    if (minSalary) {
+      params.append('minSalary', minSalary);
+    }
+    if (maxSalary) {
+      params.append('maxSalary', maxSalary);
+    }
+    // console.log(API_URL + '/users?' + params.toString());
+
+    fetch(API_URL + '/users?' + params.toString())
+      .then(response => response.json()) // parse JSON from request
+      .then(resultData => {
+        // console.log(resultData);
+        onResChange(resultData);
+      });
   }
 
   function displayToggleIcon(status) {
     if (status === 'asc') {
-      return <Icon as={TriangleUpIcon} />;
+      return <Icon color={'pink.400'} as={TriangleUpIcon} />;
     } else if (status === 'desc') {
-      return <Icon as={TriangleDownIcon} />;
+      return <Icon color={'pink.400'} as={TriangleDownIcon} />;
     } else {
       return <Icon as={UpDownIcon} />;
     }
@@ -66,7 +86,7 @@ export const SalaryTable = ({ data }) => {
                 <Th
                   cursor={'pointer'}
                   onClick={() => {
-                    toggle(idToggle, setIdToggle);
+                    toggle(idToggle, setIdToggle, 'id');
                   }}
                 >
                   <HStack>
@@ -77,7 +97,7 @@ export const SalaryTable = ({ data }) => {
                 <Th
                   cursor={'pointer'}
                   onClick={() => {
-                    toggle(loginToggle, setLoginToggle);
+                    toggle(loginToggle, setLoginToggle, 'login');
                   }}
                 >
                   <HStack>
@@ -88,7 +108,7 @@ export const SalaryTable = ({ data }) => {
                 <Th
                   cursor={'pointer'}
                   onClick={() => {
-                    toggle(nameToggle, setNameToggle);
+                    toggle(nameToggle, setNameToggle, 'name');
                   }}
                 >
                   <HStack>
@@ -99,7 +119,7 @@ export const SalaryTable = ({ data }) => {
                 <Th
                   cursor={'pointer'}
                   onClick={() => {
-                    toggle(salaryToggle, setSalaryToggle);
+                    toggle(salaryToggle, setSalaryToggle, 'salary');
                   }}
                 >
                   <HStack>

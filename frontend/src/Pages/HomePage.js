@@ -43,6 +43,10 @@ const HomePage = () => {
     setStatus(status);
   }
 
+  function handleResChange(res) {
+    setRes(res);
+  }
+
   return (
     <Layout>
       <Alerts onStatusChange={handleStatusChange} status={status} />
@@ -157,7 +161,16 @@ const HomePage = () => {
         </Flex>
       </Container>
 
-      {res ? <SalaryTable data={res} /> : <></>}
+      {res ? (
+        <SalaryTable
+          data={res}
+          onResChange={handleResChange}
+          minSalary={minSalary}
+          maxSalary={maxSalary}
+        />
+      ) : (
+        <></>
+      )}
     </Layout>
   );
 };

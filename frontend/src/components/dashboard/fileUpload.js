@@ -21,10 +21,12 @@ import { CheckIcon } from '@chakra-ui/icons';
 
 export const FileUpload = ({ onStatusChange }) => {
   const [filesToSend, setFilesToSend] = useState([]);
+  const [fileFlag, setFileFlag] = useState(true);
 
   function onDrop(acceptedFiles) {
     // setFilesToSend(old => [...old, ...acceptedFiles]);
     setFilesToSend(acceptedFiles);
+    setFileFlag(false);
   }
 
   const {
@@ -80,7 +82,7 @@ export const FileUpload = ({ onStatusChange }) => {
       <VStack>
         <List py={2}>{files}</List>
         <Button
-          disabled={acceptedFiles.length === 0}
+          disabled={fileFlag}
           onClick={() => {
             const fileToSend = acceptedFiles[0];
             const formData = new FormData();
@@ -95,6 +97,7 @@ export const FileUpload = ({ onStatusChange }) => {
                 onStatusChange(res.detail);
               });
             setFilesToSend([]);
+            setFileFlag(true);
           }}
         >
           Upload
