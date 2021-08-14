@@ -55,3 +55,13 @@ export const patchUser = async (
   });
   return res.json();
 };
+
+export const uploadFile = async fileToSend => {
+  const formData = new FormData();
+  formData.append(`file`, fileToSend);
+  let res = await fetch(API_URL + '/users/upload', {
+    method: 'POST',
+    body: formData,
+  });
+  return res.json();
+};

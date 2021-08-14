@@ -10,7 +10,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { API_URL } from '../../utils/constants';
+import { uploadFile } from '../../api/api';
 import { useDropzone } from 'react-dropzone';
 import {
   baseStyle,
@@ -25,19 +25,13 @@ export const FileUpload = ({ setRequestUpdate, onStatusChange }) => {
 
   function upload() {
     const fileToSend = acceptedFiles[0];
-    const formData = new FormData();
-    formData.append(`file`, fileToSend);
-    fetch(API_URL + '/users/upload', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(res => {
-        setRequestUpdate(new Date());
-        onStatusChange(res.detail);
-      });
-    setFilesToSend([]);
-    setFileFlag(true);
+    const response = uploadFile(fileToSend);
+    response.then(res => {
+      setRequestUpdate(new Date());
+      onStatusChange(res.detail);
+      setFilesToSend([]);
+      setFileFlag(true);
+    });
   }
 
   function onDrop(acceptedFiles) {

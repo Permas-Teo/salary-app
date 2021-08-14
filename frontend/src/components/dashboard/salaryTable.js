@@ -38,18 +38,15 @@ export const SalaryTable = ({
 
   function toggle(status, setFunc, text) {
     resetAllStatus();
-    let tempSortToggle = '';
 
     if (status === 'asc') {
       setFunc('desc');
       onSortToggleChange('-' + text);
-      tempSortToggle = '-' + text;
     } else if (status === 'desc') {
       setFunc('');
     } else {
       setFunc('asc');
       onSortToggleChange('+' + text);
-      tempSortToggle = '+' + text;
     }
 
     setPage(0);
