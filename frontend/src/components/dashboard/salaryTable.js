@@ -11,27 +11,23 @@ import {
   Tbody,
   Tr,
   Th,
-  Td,
 } from '@chakra-ui/react';
 import { TriangleUpIcon, TriangleDownIcon, UpDownIcon } from '@chakra-ui/icons';
 import ReactPaginate from 'react-paginate';
-import { fetchUsers } from '../../api/api';
+import { TableRow } from './tableRow';
 
 export const SalaryTable = ({
   data,
-  onResChange,
-  minSalary,
-  maxSalary,
   onSortToggleChange,
   totalPages,
   setPage,
   page,
+  setRequestUpdate,
 }) => {
   const [idToggle, setIdToggle] = useState('');
   const [loginToggle, setLoginToggle] = useState('');
   const [nameToggle, setNameToggle] = useState('');
   const [salaryToggle, setSalaryToggle] = useState('');
-  const [sortToggle, setSortToggle] = useState('');
 
   function resetAllStatus() {
     setIdToggle('');
@@ -46,24 +42,18 @@ export const SalaryTable = ({
 
     if (status === 'asc') {
       setFunc('desc');
-      setSortToggle('-' + text);
       onSortToggleChange('-' + text);
       tempSortToggle = '-' + text;
     } else if (status === 'desc') {
       setFunc('');
     } else {
       setFunc('asc');
-      setSortToggle('+' + text);
       onSortToggleChange('+' + text);
       tempSortToggle = '+' + text;
     }
 
-    let resultData = fetchUsers(tempSortToggle, minSalary, maxSalary);
-    resultData.then(resultData => {
-      console.log(resultData);
-      setPage(0);
-      onResChange(resultData.results);
-    });
+    setPage(0);
+    setRequestUpdate(new Date());
   }
 
   function displayToggleIcon(status) {
@@ -79,7 +69,7 @@ export const SalaryTable = ({
   return (
     <Center mb={6}>
       <Container
-        maxW={'5xl'}
+        maxW={'6xl'}
         bg={'whiteAlpha.100'}
         boxShadow={'xl'}
         rounded={'lg'}
@@ -87,7 +77,7 @@ export const SalaryTable = ({
         direction={'column'}
       >
         <Box overflowX="auto">
-          <Table variant="simple">
+          <Table variant="striped">
             <Thead>
               <Tr>
                 <Th
@@ -124,6 +114,7 @@ export const SalaryTable = ({
                   </HStack>
                 </Th>
                 <Th
+                  isNumeric
                   cursor={'pointer'}
                   onClick={() => {
                     toggle(salaryToggle, setSalaryToggle, 'salary');
@@ -134,18 +125,22 @@ export const SalaryTable = ({
                     {displayToggleIcon(salaryToggle)}
                   </HStack>
                 </Th>
+                <Th>
+                  <HStack>
+                    <Text>Functions</Text>
+                  </HStack>
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
               {data.length > 0 && (
                 <>
                   {data.map(singleItem => (
-                    <Tr key={singleItem.id}>
-                      <Td>{singleItem.id}</Td>
-                      <Td>{singleItem.login}</Td>
-                      <Td>{singleItem.name}</Td>
-                      <Td>{singleItem.salary}</Td>
-                    </Tr>
+                    <TableRow
+                      data={singleItem}
+                      key={singleItem.id}
+                      setRequestUpdate={setRequestUpdate}
+                    />
                   ))}
                 </>
               )}
@@ -166,16 +161,7 @@ export const SalaryTable = ({
               pageRangeDisplayed={2}
               onPageChange={({ selected }) => {
                 setPage(selected);
-                let resultData = fetchUsers(
-                  sortToggle,
-                  minSalary,
-                  maxSalary,
-                  selected
-                );
-                resultData.then(resultData => {
-                  console.log(resultData);
-                  onResChange(resultData.results);
-                });
+                setRequestUpdate(new Date());
               }}
               containerClassName={'pagination'}
               subContainerClassName={'pages pagination'}

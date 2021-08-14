@@ -19,9 +19,26 @@ import {
 } from '../../styles/dropzone-styles';
 import { CheckIcon } from '@chakra-ui/icons';
 
-export const FileUpload = ({ onStatusChange, refresh }) => {
+export const FileUpload = ({ setRequestUpdate, onStatusChange }) => {
   const [filesToSend, setFilesToSend] = useState([]);
   const [fileFlag, setFileFlag] = useState(true);
+
+  function upload() {
+    const fileToSend = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append(`file`, fileToSend);
+    fetch(API_URL + '/users/upload', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(res => {
+        setRequestUpdate(new Date());
+        onStatusChange(res.detail);
+      });
+    setFilesToSend([]);
+    setFileFlag(true);
+  }
 
   function onDrop(acceptedFiles) {
     // setFilesToSend(old => [...old, ...acceptedFiles]);
@@ -81,26 +98,7 @@ export const FileUpload = ({ onStatusChange, refresh }) => {
       </Box>
       <VStack>
         <List py={2}>{files}</List>
-        <Button
-          disabled={fileFlag}
-          onClick={() => {
-            const fileToSend = acceptedFiles[0];
-            const formData = new FormData();
-            formData.append(`file`, fileToSend);
-            fetch(API_URL + '/users/upload', {
-              method: 'POST',
-              body: formData,
-            })
-              .then(response => response.json())
-              .then(res => {
-                console.log(res.detail);
-                onStatusChange(res.detail);
-              });
-            setFilesToSend([]);
-            setFileFlag(true);
-            refresh();
-          }}
-        >
+        <Button disabled={fileFlag} onClick={() => upload()}>
           Upload
         </Button>
       </VStack>

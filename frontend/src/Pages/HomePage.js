@@ -27,8 +27,9 @@ const HomePage = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [sortToggle, setSortToggle] = useState('');
+  const [requestUpdate, setRequestUpdate] = useState(new Date());
 
-  function refresh() {
+  function reset() {
     setMinSalary('');
     setMaxSalary('');
     setPage(0);
@@ -41,16 +42,21 @@ const HomePage = () => {
     });
   }
 
+  function refresh() {
+    let resultData = fetchUsers(sortToggle, minSalary, maxSalary, page);
+    resultData.then(resultData => {
+      console.log(resultData);
+      setRes(resultData.results);
+      setTotalPages(resultData.totalPages);
+    });
+  }
+
   useEffect(() => {
     refresh();
-  }, []);
+  }, [requestUpdate]);
 
   function handleStatusChange(status) {
     setStatus(status);
-  }
-
-  function handleResChange(res) {
-    setRes(res);
   }
 
   function handleSortToggleChange(sortToggle) {
@@ -65,8 +71,8 @@ const HomePage = () => {
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>
             <FileUpload
+              setRequestUpdate={setRequestUpdate}
               onStatusChange={handleStatusChange}
-              refresh={refresh}
               flex="1"
             />
           </Box>
@@ -149,12 +155,12 @@ const HomePage = () => {
                   <Button
                     m={2}
                     onClick={() => {
-                      refresh();
+                      reset();
                     }}
                   >
                     {'Reset'}
                   </Button>
-                  <Button m={2} type="submit">
+                  <Button colorScheme={'blue'} m={2} type="submit">
                     {'Calculate'}
                   </Button>
                 </Center>
@@ -167,13 +173,11 @@ const HomePage = () => {
       {res ? (
         <SalaryTable
           data={res}
-          onResChange={handleResChange}
-          minSalary={minSalary}
-          maxSalary={maxSalary}
           onSortToggleChange={handleSortToggleChange}
           page={page}
           setPage={setPage}
           totalPages={totalPages}
+          setRequestUpdate={setRequestUpdate}
         />
       ) : (
         <></>

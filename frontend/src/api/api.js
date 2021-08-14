@@ -19,10 +19,14 @@ export const fetchUsers = async (
   if (page) {
     params.append('offset', ITEMS_PER_PAGE * page);
   }
-
-  console.log(API_URL + '/users?' + params.toString());
-
   let res = await fetch(API_URL + '/users?' + params.toString());
   window.scrollTo(0, 0);
+  return res.json();
+};
+
+export const deleteUser = async (userId = '') => {
+  let res = await fetch(API_URL + '/users/' + userId, {
+    method: 'DELETE',
+  });
   return res.json();
 };
