@@ -70,10 +70,18 @@ def patch_user(db: Session, user_id, userBase: schemas.UserBase):
     db_user = db.query(models.User).filter(models.User.id==user_id).first()
     userBase_data = jsonable_encoder(userBase)
     stored_user_data = jsonable_encoder(db_user)
+
+    # edge case: salary = 0 not updated
+    def calcSalary():
+        curr = userBase_data["salary"]
+        if type(curr) == int or type(curr) == float:
+            return curr
+        return stored_user_data["salary"]
+
     updated_user_data = {
         "login": userBase_data["login"] or stored_user_data["login"],
         "name": userBase_data["name"] or stored_user_data["name"],
-        "salary": userBase_data["salary"] or stored_user_data["salary"],
+        "salary": calcSalary(),
     }
     db.query(models.User).filter(models.User.id == user_id).update({
         models.User.login: updated_user_data["login"],
