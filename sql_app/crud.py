@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import select
 from sqlalchemy import and_
 from sqlalchemy import desc, asc
 from . import models, schemas
+from fastapi.encoders import jsonable_encoder
 from math import ceil
 
 
@@ -64,7 +64,23 @@ def delete_user(db: Session, user_id):
     db_user = db.query(models.User).filter(models.User.id==user_id).first()
     db.delete(db_user)
     db.commit()
-    return db_user
+
+
+def patch_user(db: Session, user_id, userBase: schemas.UserBase):
+    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+    userBase_data = jsonable_encoder(userBase)
+    stored_user_data = jsonable_encoder(db_user)
+    updated_user_data = {
+        "login": userBase_data["login"] or stored_user_data["login"],
+        "name": userBase_data["name"] or stored_user_data["name"],
+        "salary": userBase_data["salary"] or stored_user_data["salary"],
+    }
+    db.query(models.User).filter(models.User.id == user_id).update({
+        models.User.login: updated_user_data["login"],
+        models.User.name: updated_user_data["name"],
+        models.User.salary: updated_user_data["salary"]
+    }, synchronize_session = False)
+    db.commit()
 
 
 def updateDb(db: Session, df):

@@ -46,7 +46,7 @@ def get_db():
 
 
 @app.post("/users/", response_model=schemas.User)
-def create_user(user: schemas.User, db: Session = Depends(get_db), status_code=201):
+def create_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
     if db_user:
         return crud.update_user(db=db, user=user)
@@ -81,6 +81,15 @@ def delete_user(user_id: str, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     crud.delete_user(db, user_id=user_id)
+    return db_user
+
+
+@app.patch("/users/{user_id}", response_model=schemas.User)
+def patch_user(user_id: str, userBase: schemas.UserBase, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, user_id=user_id)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    crud.patch_user(db, user_id=user_id, userBase=userBase)
     return db_user
     
 

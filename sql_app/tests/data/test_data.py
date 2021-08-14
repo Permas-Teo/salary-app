@@ -18,3 +18,9 @@ SAMPLE_VALID_DATA_3 = {
     "name":"c",
     "salary":10000.05,
 }
+
+SAMPLE_VALID_USERBASE_DATA_1 = {
+    "login":"update_testlogin3",
+    "name":"update_a",
+    "salary":100000.05,
+}
