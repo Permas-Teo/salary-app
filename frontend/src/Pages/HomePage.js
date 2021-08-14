@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
 import { Box, Container, Flex } from '@chakra-ui/react';
-import { SalaryTable } from '../components/dashboard/salaryTable';
+import { SalaryTable } from '../components/dashboard/table/salaryTable';
 import { FileUpload } from '../components/dashboard/fileUpload';
 import { QueryFilter } from '../components/dashboard/queryFilter';
 import { Alerts } from '../components/dashboard/alerts';

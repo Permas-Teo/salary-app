@@ -21,7 +21,7 @@ import {
 } from '@chakra-ui/react';
 
 import { EditIcon } from '@chakra-ui/icons';
-import { patchUser } from '../../api/api';
+import { patchUser } from '../../../api/api';
 
 export const ClickableEditIcon = ({ userId, setRequestUpdate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
