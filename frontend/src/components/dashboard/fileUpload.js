@@ -4,6 +4,7 @@ import {
   Button,
   Container,
   Heading,
+  HStack,
   List,
   ListIcon,
   ListItem,
@@ -19,15 +20,20 @@ import {
 } from '../../styles/dropzone-styles';
 import { CheckIcon } from '@chakra-ui/icons';
 
-export const FileUpload = ({ setStatus }) => {
+export const FileUpload = ({ setStatus, setPage, setRequestUpdate }) => {
   const [filesToSend, setFilesToSend] = useState([]);
   const [fileFlag, setFileFlag] = useState(true);
 
   function upload() {
     const fileToSend = acceptedFiles[0];
     const response = uploadFile(fileToSend);
+
     response.then(res => {
       setStatus(res.detail);
+      setTimeout(function () {
+        setPage(0);
+        setRequestUpdate(new Date());
+      }, 1000);
       setFilesToSend([]);
       setFileFlag(true);
     });

@@ -22,7 +22,7 @@ export const SalaryTable = ({
   totalPages,
   setPage,
   page,
-  setRequestUpdate
+  setRequestUpdate,
 }) => {
   const [idToggle, setIdToggle] = useState('');
   const [loginToggle, setLoginToggle] = useState('');
@@ -44,6 +44,7 @@ export const SalaryTable = ({
       setSortToggle('-' + text);
     } else if (status === 'desc') {
       setFunc('');
+      setSortToggle('');
     } else {
       setFunc('asc');
       setSortToggle('+' + text);

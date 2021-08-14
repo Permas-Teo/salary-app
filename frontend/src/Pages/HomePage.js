@@ -34,7 +34,7 @@ const HomePage = () => {
       });
     }
     refresh();
-  }, [sortToggle, minSalary, maxSalary, page, status, requestUpdate]);
+  }, [sortToggle, minSalary, maxSalary, page, requestUpdate]);
 
   return (
     <Layout>
@@ -45,7 +45,8 @@ const HomePage = () => {
           <Box m={2}>
             <FileUpload
               setStatus={setStatus}
-              flex="1"
+              setPage={setPage}
+              setRequestUpdate={setRequestUpdate}
             />
           </Box>
           <Box m={2}>
