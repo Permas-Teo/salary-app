@@ -55,9 +55,7 @@ const HomePage = () => {
   return (
     <Layout>
       <Alerts onStatusChange={handleStatusChange} status={status} />
-
       <Text mt={2} mr={2} align={"right"}>{userLanguage}</Text>
-
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>

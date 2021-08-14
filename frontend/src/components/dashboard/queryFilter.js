@@ -25,8 +25,7 @@ export const QueryFilter = ({
   return (
     <Container
       height={'270px'}
-      maxW={'xs'}
-      minW={'xs'}
+      maxW={'md'}
       bg={'whiteAlpha.100'}
       boxShadow={'xl'}
       rounded={'lg'}
