@@ -19,7 +19,7 @@ import {
 } from '../../styles/dropzone-styles';
 import { CheckIcon } from '@chakra-ui/icons';
 
-export const FileUpload = ({ setRequestUpdate, setStatus }) => {
+export const FileUpload = ({ setStatus }) => {
   const [filesToSend, setFilesToSend] = useState([]);
   const [fileFlag, setFileFlag] = useState(true);
 
@@ -27,7 +27,6 @@ export const FileUpload = ({ setRequestUpdate, setStatus }) => {
     const fileToSend = acceptedFiles[0];
     const response = uploadFile(fileToSend);
     response.then(res => {
-      setRequestUpdate(new Date());
       setStatus(res.detail);
       setFilesToSend([]);
       setFileFlag(true);

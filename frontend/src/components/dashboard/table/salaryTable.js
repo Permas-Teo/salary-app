@@ -22,7 +22,7 @@ export const SalaryTable = ({
   totalPages,
   setPage,
   page,
-  setRequestUpdate,
+  setRequestUpdate
 }) => {
   const [idToggle, setIdToggle] = useState('');
   const [loginToggle, setLoginToggle] = useState('');
@@ -50,7 +50,6 @@ export const SalaryTable = ({
     }
 
     setPage(0);
-    setRequestUpdate(new Date());
   }
 
   function displayToggleIcon(status) {
@@ -158,7 +157,6 @@ export const SalaryTable = ({
               pageRangeDisplayed={2}
               onPageChange={({ selected }) => {
                 setPage(selected);
-                setRequestUpdate(new Date());
               }}
               containerClassName={'pagination'}
               subContainerClassName={'pages pagination'}

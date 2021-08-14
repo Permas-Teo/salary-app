@@ -23,12 +23,6 @@ const HomePage = () => {
     setMinSalary('');
     setMaxSalary('');
     setPage(0);
-
-    let resultData = fetchUsers(sortToggle);
-    resultData.then(resultData => {
-      setRes(resultData.results);
-      setTotalPages(resultData.totalPages);
-    });
   }
 
   useEffect(() => {
@@ -40,7 +34,7 @@ const HomePage = () => {
       });
     }
     refresh();
-  }, [requestUpdate, sortToggle, minSalary, maxSalary, page]);
+  }, [sortToggle, minSalary, maxSalary, page, status, requestUpdate]);
 
   return (
     <Layout>
@@ -50,14 +44,12 @@ const HomePage = () => {
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>
             <FileUpload
-              setRequestUpdate={setRequestUpdate}
               setStatus={setStatus}
               flex="1"
             />
           </Box>
           <Box m={2}>
             <QueryFilter
-              setRequestUpdate={setRequestUpdate}
               setPage={setPage}
               minSalary={minSalary}
               setMinSalary={setMinSalary}
