@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
-import { Box, Container, Flex } from '@chakra-ui/react';
+import { Box, Container, Flex, Text } from '@chakra-ui/react';
 import { SalaryTable } from '../components/dashboard/table/salaryTable';
 import { FileUpload } from '../components/dashboard/fileUpload';
 import { QueryFilter } from '../components/dashboard/queryFilter';
@@ -16,6 +16,9 @@ const HomePage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [sortToggle, setSortToggle] = useState('');
   const [requestUpdate, setRequestUpdate] = useState(new Date());
+
+  const userLanguage = window.navigator.userLanguage || window.navigator.language;
+  // console.log(userLanguage);
 
   function reset() {
     setMinSalary('');
@@ -52,6 +55,8 @@ const HomePage = () => {
   return (
     <Layout>
       <Alerts onStatusChange={handleStatusChange} status={status} />
+
+      <Text mt={2} mr={2} align={"right"}>{userLanguage}</Text>
 
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
