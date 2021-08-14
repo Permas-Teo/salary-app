@@ -11,11 +11,11 @@ def get_user_by_id(db: Session, user_id: str):
 
 
 def get_users(db: Session, 
-            offset: int = 0, 
-            limit: int = 30, 
-            minSalary: float = 0, 
-            maxSalary: float = float('inf'), 
-            sort: str = ""):
+            offset: int, 
+            limit: int, 
+            minSalary: float, 
+            maxSalary: float, 
+            sort: str):
 
     query = db.query(models.User).filter(
         and_(
@@ -27,7 +27,7 @@ def get_users(db: Session,
     queryLength = (query.count())
     totalPages = queryLength//limit + ceil((queryLength % limit) / limit)
 
-    if sort:
+    if (sort != "default"):
         sortDirection = sort[0]
         sortField = sort[1:]
         if sortDirection == "-":

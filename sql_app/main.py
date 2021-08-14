@@ -54,11 +54,11 @@ def create_user(user: schemas.User, db: Session = Depends(get_db)):
 
 
 @app.get("/users/")
-def read_users(offset: int = 0, 
-            limit: int = 30, 
-            minSalary: float = 0, 
-            maxSalary: float = float('inf'), 
-            sort: str = "", 
+def read_users(offset: int, 
+            limit: int, 
+            minSalary: float, 
+            maxSalary: float, 
+            sort: str, 
             db: Session = Depends(get_db)):
     try:
         users = crud.get_users(db, offset=offset, limit=limit, minSalary=minSalary, maxSalary=maxSalary, sort=sort)

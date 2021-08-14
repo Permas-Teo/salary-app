@@ -9,16 +9,30 @@ export const fetchUsers = async (
   let params = new URLSearchParams();
   if (sortToggle) {
     params.append('sort', sortToggle);
+  } else {
+    params.append('sort', "default");
   }
+
   if (minSalary) {
     params.append('minSalary', minSalary);
+  } else {
+    params.append('minSalary', 0);
   }
+
   if (maxSalary) {
     params.append('maxSalary', maxSalary);
+  } else {
+    params.append('maxSalary', Number.MAX_SAFE_INTEGER);
   }
+
   if (page) {
     params.append('offset', ITEMS_PER_PAGE * page);
+  } else {
+    params.append('offset', 0);
   }
+
+  params.append('limit', ITEMS_PER_PAGE);
+
   let res = await fetch(API_URL + '/users?' + params.toString());
   window.scrollTo(0, 0);
   return res.json();
