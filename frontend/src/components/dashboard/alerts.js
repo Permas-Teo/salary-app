@@ -7,7 +7,7 @@ import {
   CloseButton,
 } from '@chakra-ui/react';
 
-export const Alerts = ({ onStatusChange, status }) => {
+export const Alerts = ({ setStatus, status }) => {
   return (
     <>
       {status && status === 'Success' && (
@@ -18,7 +18,7 @@ export const Alerts = ({ onStatusChange, status }) => {
             position="absolute"
             right="8px"
             top="8px"
-            onClick={() => onStatusChange('')}
+            onClick={() => setStatus('')}
           />
         </Alert>
       )}
@@ -32,7 +32,7 @@ export const Alerts = ({ onStatusChange, status }) => {
             position="absolute"
             right="8px"
             top="8px"
-            onClick={() => onStatusChange('')}
+            onClick={() => setStatus('')}
           />
         </Alert>
       )}

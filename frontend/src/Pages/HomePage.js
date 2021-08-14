@@ -18,7 +18,6 @@ const HomePage = () => {
   const [requestUpdate, setRequestUpdate] = useState(new Date());
 
   const userLanguage = window.navigator.userLanguage || window.navigator.language;
-  // console.log(userLanguage);
 
   function reset() {
     setMinSalary('');
@@ -32,36 +31,27 @@ const HomePage = () => {
     });
   }
 
-  function refresh() {
-    let resultData = fetchUsers(sortToggle, minSalary, maxSalary, page);
-    resultData.then(resultData => {
-      setRes(resultData.results);
-      setTotalPages(resultData.totalPages);
-    });
-  }
-
   useEffect(() => {
+    const refresh = () => {
+      let resultData = fetchUsers(sortToggle, minSalary, maxSalary, page);
+      resultData.then(resultData => {
+        setRes(resultData.results);
+        setTotalPages(resultData.totalPages);
+      });
+    }
     refresh();
-  }, [requestUpdate]);
-
-  function handleStatusChange(status) {
-    setStatus(status);
-  }
-
-  function handleSortToggleChange(sortToggle) {
-    setSortToggle(sortToggle);
-  }
+  }, [requestUpdate, sortToggle, minSalary, maxSalary, page]);
 
   return (
     <Layout>
-      <Alerts onStatusChange={handleStatusChange} status={status} />
+      <Alerts setStatus={setStatus} status={status} />
       <Text mt={2} mr={2} align={"right"}>{userLanguage}</Text>
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>
             <FileUpload
               setRequestUpdate={setRequestUpdate}
-              onStatusChange={handleStatusChange}
+              setStatus={setStatus}
               flex="1"
             />
           </Box>
@@ -79,17 +69,15 @@ const HomePage = () => {
         </Flex>
       </Container>
 
-      {res ? (
+      {res && (
         <SalaryTable
           data={res}
-          onSortToggleChange={handleSortToggleChange}
+          setSortToggle={setSortToggle}
           page={page}
           setPage={setPage}
           totalPages={totalPages}
           setRequestUpdate={setRequestUpdate}
         />
-      ) : (
-        <></>
       )}
     </Layout>
   );

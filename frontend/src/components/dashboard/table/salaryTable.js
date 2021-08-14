@@ -18,7 +18,7 @@ import { TableRow } from './tableRow';
 
 export const SalaryTable = ({
   data,
-  onSortToggleChange,
+  setSortToggle,
   totalPages,
   setPage,
   page,
@@ -41,12 +41,12 @@ export const SalaryTable = ({
 
     if (status === 'asc') {
       setFunc('desc');
-      onSortToggleChange('-' + text);
+      setSortToggle('-' + text);
     } else if (status === 'desc') {
       setFunc('');
     } else {
       setFunc('asc');
-      onSortToggleChange('+' + text);
+      setSortToggle('+' + text);
     }
 
     setPage(0);
