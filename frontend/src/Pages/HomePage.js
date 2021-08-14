@@ -36,7 +36,6 @@ const HomePage = () => {
 
     let resultData = fetchUsers(sortToggle);
     resultData.then(resultData => {
-      console.log(resultData);
       setRes(resultData.results);
       setTotalPages(resultData.totalPages);
     });
@@ -45,7 +44,6 @@ const HomePage = () => {
   function refresh() {
     let resultData = fetchUsers(sortToggle, minSalary, maxSalary, page);
     resultData.then(resultData => {
-      console.log(resultData);
       setRes(resultData.results);
       setTotalPages(resultData.totalPages);
     });
@@ -104,7 +102,6 @@ const HomePage = () => {
                   e.preventDefault();
                   let resultData = fetchUsers(sortToggle, minSalary, maxSalary);
                   resultData.then(resultData => {
-                    console.log(resultData);
                     setRes(resultData.results);
                     setPage(0);
                     setTotalPages(resultData.totalPages);

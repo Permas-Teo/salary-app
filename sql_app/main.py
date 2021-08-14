@@ -89,7 +89,13 @@ def patch_user(user_id: str, userBase: schemas.UserBase, db: Session = Depends(g
     db_user = crud.get_user_by_id(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    crud.patch_user(db, user_id=user_id, userBase=userBase)
+    try:
+        crud.patch_user(db, user_id=user_id, userBase=userBase)
+    except exc.IntegrityError:
+        raise HTTPException(status_code=400, detail="Database integrity validation failed")
+    except:
+        raise HTTPException(status_code=422, detail="Invalid fields")
+        
     return db_user
     
 

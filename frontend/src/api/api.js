@@ -30,3 +30,28 @@ export const deleteUser = async (userId = '') => {
   });
   return res.json();
 };
+
+export const patchUser = async (
+  userId = '',
+  login = '',
+  name = '',
+  salary = ''
+) => {
+  let updateUserBase = {};
+  if (login) {
+    updateUserBase['login'] = login;
+  }
+  if (name) {
+    updateUserBase['name'] = name;
+  }
+  if (salary) {
+    updateUserBase['salary'] = salary;
+  }
+
+  let res = await fetch(API_URL + '/users/' + userId, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updateUserBase),
+  });
+  return res.json();
+};
