@@ -1,25 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout';
-import { API_URL } from '../utils/constants';
-import { SalaryTable } from '../components/dashboard/salaryTable';
+import { Box, Container, Flex } from '@chakra-ui/react';
+import { SalaryTable } from '../components/dashboard/table/salaryTable';
 import { FileUpload } from '../components/dashboard/fileUpload';
+import { QueryFilter } from '../components/dashboard/queryFilter';
+import { Alerts } from '../components/dashboard/alerts';
+import { fetchUsers } from '../api/api';
 
 const HomePage = () => {
   const [res, setRes] = useState('');
+  const [status, setStatus] = useState('');
+  const [minSalary, setMinSalary] = useState('');
+  const [maxSalary, setMaxSalary] = useState('');
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [sortToggle, setSortToggle] = useState('');
+  const [requestUpdate, setRequestUpdate] = useState(new Date());
+
+  function reset() {
+    setMinSalary('');
+    setMaxSalary('');
+    setPage(0);
+
+    let resultData = fetchUsers(sortToggle);
+    resultData.then(resultData => {
+      setRes(resultData.results);
+      setTotalPages(resultData.totalPages);
+    });
+  }
+
+  function refresh() {
+    let resultData = fetchUsers(sortToggle, minSalary, maxSalary, page);
+    resultData.then(resultData => {
+      setRes(resultData.results);
+      setTotalPages(resultData.totalPages);
+    });
+  }
 
   useEffect(() => {
-    fetch(API_URL + '/users')
-      .then(response => response.json()) // parse JSON from request
-      .then(resultData => {
-        // console.log(resultData);
-        setRes(resultData);
-      });
-  }, [res]);
+    refresh();
+  }, [requestUpdate]);
+
+  function handleStatusChange(status) {
+    setStatus(status);
+  }
+
+  function handleSortToggleChange(sortToggle) {
+    setSortToggle(sortToggle);
+  }
 
   return (
     <Layout>
-      <FileUpload />
-      {res ? <SalaryTable data={res} /> : <></>}
+      <Alerts onStatusChange={handleStatusChange} status={status} />
+
+      <Container maxWidth={'10xl'}>
+        <Flex flexWrap={'wrap'} justify="center">
+          <Box m={2}>
+            <FileUpload
+              setRequestUpdate={setRequestUpdate}
+              onStatusChange={handleStatusChange}
+              flex="1"
+            />
+          </Box>
+          <Box m={2}>
+            <QueryFilter
+              setRequestUpdate={setRequestUpdate}
+              setPage={setPage}
+              minSalary={minSalary}
+              setMinSalary={setMinSalary}
+              maxSalary={maxSalary}
+              setMaxSalary={setMaxSalary}
+              reset={reset}
+            />
+          </Box>
+        </Flex>
+      </Container>
+
+      {res ? (
+        <SalaryTable
+          data={res}
+          onSortToggleChange={handleSortToggleChange}
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          setRequestUpdate={setRequestUpdate}
+        />
+      ) : (
+        <></>
+      )}
     </Layout>
   );
 };
