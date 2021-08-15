@@ -50,16 +50,24 @@ def read_root():
 @app.put("/users/", response_model=schemas.User)
 def put_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
-    if db_user:
-        return crud.update_user(db=db, user=user)
-    return crud.create_user(db=db, user=user)
+    try:
+        if db_user:
+            return crud.update_user(db=db, user=user)
+        res = crud.create_user(db=db, user=user)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid fields")
+    return res
 
 
 @app.post("/users/{id}", response_model=schemas.User)
 def post_user(id: str, user: schemas.User, db: Session = Depends(get_db)):
     if crud.isIdDifferent(id, user):
         raise HTTPException(status_code=400, detail="Query Parameter id mismatch with User object id.")
-    return crud.create_user(db=db, user=user)
+    try:
+        res = crud.create_user(db=db, user=user)
+    except:
+        raise HTTPException(status_code=400, detail="Invalid fields")
+    return res
 
 
 @app.get("/users/")
@@ -70,10 +78,10 @@ def read_users(offset: int,
             sort: str, 
             db: Session = Depends(get_db)):
     try:
-        users = crud.get_users(db, offset=offset, limit=limit, minSalary=minSalary, maxSalary=maxSalary, sort=sort)
+        res = crud.get_users(db, offset=offset, limit=limit, minSalary=minSalary, maxSalary=maxSalary, sort=sort)
     except:
         raise HTTPException(status_code=400, detail="Invalid fields")
-    return users
+    return res
 
 
 @app.get("/users/{id}", response_model=schemas.User)

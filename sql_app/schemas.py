@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, validator
 
 class UserBase(BaseModel):
     login: Optional[str] = None
@@ -25,15 +25,3 @@ class User(UserBase):
     def salary_positive(cls, v):
         assert v >= 0, 'must be a positive number'
         return v
-
-
-# try:
-#     User(
-#         id='samuel',
-#         login='scolvin',
-#         name=12,
-#         salary="-111.0",
-        
-#     )
-# except ValidationError as e:
-#     print(e)
