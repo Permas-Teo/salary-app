@@ -30,13 +30,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# api
-
-@app.get("/")
-def read_root():
-    return {"Welcome to salary-app sql server!"}
 
 # Dependency
+
 def get_db():
     db = SessionLocal()
     try:
@@ -45,11 +41,25 @@ def get_db():
         db.close()
 
 
-@app.post("/users/", response_model=schemas.User)
+# api
+
+@app.get("/")
+def read_root():
+    return {"Welcome to salary-app sql server!"}
+
+
+@app.put("/users/", response_model=schemas.User)
 def create_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
     if db_user:
         return crud.update_user(db=db, user=user)
+    return crud.create_user(db=db, user=user)
+
+
+@app.post("/users/{id}", response_model=schemas.User)
+def create_user(id: str, user: schemas.User, db: Session = Depends(get_db)):
+    if crud.isIdDifferent(id, user):
+        raise HTTPException(status_code=400, detail="Query Parameter id mismatch with User object id.")
     return crud.create_user(db=db, user=user)
 
 
@@ -67,30 +77,30 @@ def read_users(offset: int,
     return users
 
 
-@app.get("/users/{user_id}", response_model=schemas.User)
-def read_user(user_id: str, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
+@app.get("/users/{id}", response_model=schemas.User)
+def read_user(id: str, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, id=id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
 
-@app.delete("/users/{user_id}", response_model=schemas.User)
-def delete_user(user_id: str, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
+@app.delete("/users/{id}", response_model=schemas.User)
+def delete_user(id: str, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, id=id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    crud.delete_user(db, user_id=user_id)
+    crud.delete_user(db, id=id)
     return db_user
 
 
-@app.patch("/users/{user_id}", response_model=schemas.User)
-def patch_user(user_id: str, userBase: schemas.UserBase, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_id(db, user_id=user_id)
+@app.patch("/users/{id}", response_model=schemas.User)
+def patch_user(id: str, userBase: schemas.UserBase, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_id(db, id=id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     try:
-        crud.patch_user(db, user_id=user_id, userBase=userBase)
+        crud.patch_user(db, id=id, userBase=userBase)
     except exc.IntegrityError:
         raise HTTPException(status_code=400, detail="Database integrity validation failed")
     except:

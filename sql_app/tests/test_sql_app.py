@@ -27,9 +27,9 @@ app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
 
-def test_create_user():
+def test_post_user():
     response = client.post(
-        "/users/",
+        "/users/" + SAMPLE_VALID_DATA_1["id"],
         json=SAMPLE_VALID_DATA_1,
     )
     assert response.status_code == 200, response.text
@@ -89,32 +89,26 @@ def test_read_user_fail():
     assert response.status_code == 404
 
 def test_read_users():
-    client.post(
-        "/users/",
-        json=SAMPLE_VALID_DATA_1,
-    )
-    client.post(
+    client.put(
         "/users/",
         json=SAMPLE_VALID_DATA_2,
     )
-    client.post(
+    client.put(
         "/users/",
         json=SAMPLE_VALID_DATA_3,
     )
 
-    response = client.get("/users/?limit=1&sort=+name")
+    response = client.get("/users/?minSalary=0&maxSalary=100001&limit=1&offset=0&sort=-salary")
     data = response.json()["results"]
     assert len(data) == 1
-    assert data[0] == SAMPLE_VALID_DATA_1
+    assert data[0] == SAMPLE_VALID_DATA_3
 
-    response = client.get("/users/?limit=1&offset=1&sort=+id")
+    response = client.get("/users/?minSalary=0&maxSalary=100001&limit=1&offset=1&sort=-id")
     data = response.json()["results"]
     assert len(data) == 1
     assert data[0] == SAMPLE_VALID_DATA_2
 
-    response = client.get("/users/?minSalary=100&maxSalary=1001&sort=-salary")
-    data = response.json()["results"]
-    assert len(data) == 2
-    assert data[0] == SAMPLE_VALID_DATA_1
-    assert data[1] == SAMPLE_VALID_DATA_2
+    # Missing fields
+    response = client.get("/users/?minSalary=100&maxSalary=100001&limit=1&sort=-salary")
+    assert response.status_code == 422
 

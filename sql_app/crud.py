@@ -6,8 +6,13 @@ from fastapi.encoders import jsonable_encoder
 from math import ceil
 
 
-def get_user_by_id(db: Session, user_id: str):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def isIdDifferent(id, user):
+    user_data = jsonable_encoder(user)
+    return id != user_data["id"]
+
+
+def get_user_by_id(db: Session, id: str):
+    return db.query(models.User).filter(models.User.id == id).first()
 
 
 def get_users(db: Session, 
@@ -60,14 +65,14 @@ def update_user(db: Session, user: schemas.User):
     return db_user
 
 
-def delete_user(db: Session, user_id):
-    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+def delete_user(db: Session, id):
+    db_user = db.query(models.User).filter(models.User.id==id).first()
     db.delete(db_user)
     db.commit()
 
 
-def patch_user(db: Session, user_id, userBase: schemas.UserBase):
-    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+def patch_user(db: Session, id, userBase: schemas.UserBase):
+    db_user = db.query(models.User).filter(models.User.id==id).first()
     userBase_data = jsonable_encoder(userBase)
     stored_user_data = jsonable_encoder(db_user)
 
@@ -83,7 +88,7 @@ def patch_user(db: Session, user_id, userBase: schemas.UserBase):
         "name": userBase_data["name"] or stored_user_data["name"],
         "salary": calcSalary(),
     }
-    db.query(models.User).filter(models.User.id == user_id).update({
+    db.query(models.User).filter(models.User.id == id).update({
         models.User.login: updated_user_data["login"],
         models.User.name: updated_user_data["name"],
         models.User.salary: updated_user_data["salary"]
