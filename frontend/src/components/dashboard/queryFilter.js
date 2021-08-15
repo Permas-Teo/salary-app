@@ -14,19 +14,16 @@ import {
 } from '@chakra-ui/react';
 
 export const QueryFilter = ({
-  setRequestUpdate,
   setPage,
   minSalary,
   setMinSalary,
   maxSalary,
   setMaxSalary,
-  reset,
 }) => {
   return (
     <Container
       height={'270px'}
-      maxW={'xs'}
-      minW={'xs'}
+      maxW={'md'}
       bg={'whiteAlpha.100'}
       boxShadow={'xl'}
       rounded={'lg'}
@@ -39,19 +36,10 @@ export const QueryFilter = ({
         textAlign={'center'}
         my={5}
       >
-        Filter
+        Live Filter
       </Heading>
 
-      <Stack
-        direction={'column'}
-        as={'form'}
-        spacing={'12px'}
-        onSubmit={e => {
-          e.preventDefault();
-          setPage(0);
-          setRequestUpdate(new Date());
-        }}
-      >
+      <Stack direction={'column'} as={'form'} spacing={'12px'}>
         <FormControl>
           <NumberInput
             size="md"
@@ -59,6 +47,7 @@ export const QueryFilter = ({
             step={100}
             onChange={e => {
               setMinSalary(e);
+              setPage(0);
             }}
             value={minSalary}
           >
@@ -79,6 +68,7 @@ export const QueryFilter = ({
             step={100}
             onChange={e => {
               setMaxSalary(e);
+              setPage(0);
             }}
             value={maxSalary}
           >
@@ -96,13 +86,14 @@ export const QueryFilter = ({
           <Button
             m={2}
             onClick={() => {
-              reset();
+              if (minSalary || maxSalary) {
+                setMaxSalary('');
+                setMinSalary('');
+                setPage(0);
+              }
             }}
           >
             {'Reset'}
-          </Button>
-          <Button colorScheme={'blue'} m={2} type="submit">
-            {'Calculate'}
           </Button>
         </Center>
       </Stack>

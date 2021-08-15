@@ -6,16 +6,21 @@ from fastapi.encoders import jsonable_encoder
 from math import ceil
 
 
-def get_user_by_id(db: Session, user_id: str):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def isIdDifferent(id, user):
+    user_data = jsonable_encoder(user)
+    return id != user_data["id"]
+
+
+def get_user_by_id(db: Session, id: str):
+    return db.query(models.User).filter(models.User.id == id).first()
 
 
 def get_users(db: Session, 
-            offset: int = 0, 
-            limit: int = 30, 
-            minSalary: float = 0, 
-            maxSalary: float = float('inf'), 
-            sort: str = ""):
+            offset: int, 
+            limit: int, 
+            minSalary: float, 
+            maxSalary: float, 
+            sort: str):
 
     query = db.query(models.User).filter(
         and_(
@@ -27,7 +32,7 @@ def get_users(db: Session,
     queryLength = (query.count())
     totalPages = queryLength//limit + ceil((queryLength % limit) / limit)
 
-    if sort:
+    if (sort != "default"):
         sortDirection = sort[0]
         sortField = sort[1:]
         if sortDirection == "-":
@@ -60,14 +65,14 @@ def update_user(db: Session, user: schemas.User):
     return db_user
 
 
-def delete_user(db: Session, user_id):
-    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+def delete_user(db: Session, id):
+    db_user = db.query(models.User).filter(models.User.id==id).first()
     db.delete(db_user)
     db.commit()
 
 
-def patch_user(db: Session, user_id, userBase: schemas.UserBase):
-    db_user = db.query(models.User).filter(models.User.id==user_id).first()
+def patch_user(db: Session, id, userBase: schemas.UserBase):
+    db_user = db.query(models.User).filter(models.User.id==id).first()
     userBase_data = jsonable_encoder(userBase)
     stored_user_data = jsonable_encoder(db_user)
 
@@ -83,7 +88,7 @@ def patch_user(db: Session, user_id, userBase: schemas.UserBase):
         "name": userBase_data["name"] or stored_user_data["name"],
         "salary": calcSalary(),
     }
-    db.query(models.User).filter(models.User.id == user_id).update({
+    db.query(models.User).filter(models.User.id == id).update({
         models.User.login: updated_user_data["login"],
         models.User.name: updated_user_data["name"],
         models.User.salary: updated_user_data["salary"]
@@ -93,8 +98,7 @@ def patch_user(db: Session, user_id, userBase: schemas.UserBase):
 
 def updateDb(db: Session, df):
     for index, row in df.iterrows():
-        db_user = models.User(id=row["id"], login=row["login"], name=row["name"], salary=row["salary"])
-
+        db_user = models.User(id=row.iloc[0], login=row.iloc[1], name=row.iloc[2], salary=row.iloc[3])
         dup_db_user = get_user_by_id(db, db_user.id)
         if dup_db_user:
             db.query(models.User).filter(models.User.id == db_user.id).update({

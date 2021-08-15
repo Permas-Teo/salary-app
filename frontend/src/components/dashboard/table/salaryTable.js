@@ -18,7 +18,7 @@ import { TableRow } from './tableRow';
 
 export const SalaryTable = ({
   data,
-  onSortToggleChange,
+  setSortToggle,
   totalPages,
   setPage,
   page,
@@ -41,16 +41,16 @@ export const SalaryTable = ({
 
     if (status === 'asc') {
       setFunc('desc');
-      onSortToggleChange('-' + text);
+      setSortToggle('-' + text);
     } else if (status === 'desc') {
       setFunc('');
+      setSortToggle('');
     } else {
       setFunc('asc');
-      onSortToggleChange('+' + text);
+      setSortToggle('+' + text);
     }
 
     setPage(0);
-    setRequestUpdate(new Date());
   }
 
   function displayToggleIcon(status) {
@@ -154,11 +154,10 @@ export const SalaryTable = ({
               pageCount={totalPages}
               initialPage={0}
               forcePage={page}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={2}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
               onPageChange={({ selected }) => {
                 setPage(selected);
-                setRequestUpdate(new Date());
               }}
               containerClassName={'pagination'}
               subContainerClassName={'pages pagination'}
