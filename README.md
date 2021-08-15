@@ -73,6 +73,8 @@ I attempted User Story 1, 2, 3 and 5.
 
 ### 2.2 Feature(s) Explanation
 
+![Screenshot](frontend/public/pic.png)
+
 1. Sorting by a certain field is done by clicking on the appropriate table header. The header icon will update to show the user if it is currently sorted by "asc" or "desc".
 1. Live filter implementation, there is no need to click on a button to apply the filter.
 1. Any change in filters/sort will reset the table to page 1 automatically for consistent UX.
