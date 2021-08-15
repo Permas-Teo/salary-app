@@ -98,8 +98,7 @@ def patch_user(db: Session, id, userBase: schemas.UserBase):
 
 def updateDb(db: Session, df):
     for index, row in df.iterrows():
-        db_user = models.User(id=row["id"], login=row["login"], name=row["name"], salary=row["salary"])
-
+        db_user = models.User(id=row.iloc[0], login=row.iloc[1], name=row.iloc[2], salary=row.iloc[3])
         dup_db_user = get_user_by_id(db, db_user.id)
         if dup_db_user:
             db.query(models.User).filter(models.User.id == db_user.id).update({
