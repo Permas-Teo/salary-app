@@ -67,36 +67,6 @@ export default function Layout({ children }) {
               <DesktopNav />
             </Flex>
           </Flex>
-
-          <Stack
-            flex={{ base: 1, md: 0 }}
-            justify={'flex-end'}
-            direction={'row'}
-            spacing={6}
-          >
-            {/* <Button
-              as={"a"}
-              fontSize={"sm"}
-              fontWeight={400}
-              variant={"link"}
-              href={"#"}
-            >
-              Sign In
-            </Button>
-            <Button
-              display={{ base: "none", md: "inline-flex" }}
-              fontSize={"sm"}
-              fontWeight={600}
-              color={"white"}
-              bg={"pink.400"}
-              href={"#"}
-              _hover={{
-                bg: "pink.300",
-              }}
-            >
-              Sign Up
-            </Button> */}
-          </Stack>
         </Flex>
 
         <Collapse in={isOpen} animateOpacity>
@@ -264,26 +234,11 @@ const MobileNavItem = ({ label, children, href }) => {
 
 const NAV_ITEMS = [
   {
+    label: 'Profile',
+    href: '/profile',
+  },
+  {
     label: 'Dashboard',
     href: '/',
-  },
-  {
-    label: 'Side Feature',
-    href: '/feature1',
-  },
-  {
-    label: 'Others',
-    children: [
-      {
-        label: 'Sub Feature 2',
-        subLabel: 'Credits of this amazing NavBar in README',
-        href: '/subfeature2',
-      },
-      {
-        label: 'Sub Feature 3',
-        subLabel: 'I like this NavBar',
-        href: '/subfeature3',
-      },
-    ],
   },
 ];
