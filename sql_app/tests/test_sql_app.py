@@ -121,13 +121,13 @@ def test_read_users():
     response = client.get("/users/?minSalary=100&maxSalary=100001&limit=1&sort=-salary")
     assert response.status_code == 422
 
-def test_create_upload_file_success():
+def test_post_upload_file_success():
     fpath = './sql_app/tests/data/valid.csv'
     with open(fpath, "rb") as f:
         response = client.post("/users/upload/", files={"file": f})
         assert response.status_code == 200
 
-def test_create_upload_file_fail():
+def test_post_upload_file_fail():
     fpath = './sql_app/tests/data/empty_file.csv'
     with open(fpath, "rb") as f:
         response = client.post("/users/upload/", files={"file": f})

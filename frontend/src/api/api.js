@@ -10,7 +10,7 @@ export const fetchUsers = async (
   if (sortToggle) {
     params.append('sort', sortToggle);
   } else {
-    params.append('sort', "default");
+    params.append('sort', 'default');
   }
 
   if (minSalary) {
@@ -73,7 +73,7 @@ export const patchUser = async (
 export const uploadFile = async fileToSend => {
   const formData = new FormData();
   formData.append(`file`, fileToSend);
-  let res = await fetch(API_URL + '/users/upload', {
+  let res = await fetch(API_URL + '/users/upload/', {
     method: 'POST',
     body: formData,
   });

@@ -1,4 +1,3 @@
-from typing import Optional, List
 from fastapi import Depends, FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -49,7 +48,7 @@ def read_root():
 
 
 @app.put("/users/", response_model=schemas.User)
-def create_user(user: schemas.User, db: Session = Depends(get_db)):
+def put_user(user: schemas.User, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_id(db, user.id)
     if db_user:
         return crud.update_user(db=db, user=user)
@@ -57,7 +56,7 @@ def create_user(user: schemas.User, db: Session = Depends(get_db)):
 
 
 @app.post("/users/{id}", response_model=schemas.User)
-def create_user(id: str, user: schemas.User, db: Session = Depends(get_db)):
+def post_user(id: str, user: schemas.User, db: Session = Depends(get_db)):
     if crud.isIdDifferent(id, user):
         raise HTTPException(status_code=400, detail="Query Parameter id mismatch with User object id.")
     return crud.create_user(db=db, user=user)
@@ -108,9 +107,9 @@ def patch_user(id: str, userBase: schemas.UserBase, db: Session = Depends(get_db
         
     return db_user
     
-@app.post("/users/upload/")
 @app.post("/users/upload")
-def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
+@app.post("/users/upload/")
+def post_upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         df = pd.read_csv(StringIO(str(file.file.read(), 'utf-8')), encoding='utf-8')
     except EmptyDataError:
