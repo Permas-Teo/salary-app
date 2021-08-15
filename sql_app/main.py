@@ -108,7 +108,7 @@ def patch_user(id: str, userBase: schemas.UserBase, db: Session = Depends(get_db
         
     return db_user
     
-
+@app.post("/users/upload/")
 @app.post("/users/upload")
 def create_upload_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
