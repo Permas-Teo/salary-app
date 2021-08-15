@@ -44,7 +44,7 @@ In virtual environment `(venv)`, to run tests:
 
 #### Install dependencies
 
-In the **salary-app/frontend** folder, install dependencies:
+In the **salary-app/frontend** folder, install dependencies (npm 6.14.14):
 
 `npm install`
 
