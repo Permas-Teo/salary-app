@@ -154,8 +154,8 @@ export const SalaryTable = ({
               pageCount={totalPages}
               initialPage={0}
               forcePage={page}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={2}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
               onPageChange={({ selected }) => {
                 setPage(selected);
               }}

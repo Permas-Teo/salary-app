@@ -17,13 +17,8 @@ const HomePage = () => {
   const [sortToggle, setSortToggle] = useState('');
   const [requestUpdate, setRequestUpdate] = useState(new Date());
 
-  const userLanguage = window.navigator.userLanguage || window.navigator.language;
-
-  function reset() {
-    setMinSalary('');
-    setMaxSalary('');
-    setPage(0);
-  }
+  const userLanguage =
+    window.navigator.userLanguage || window.navigator.language;
 
   useEffect(() => {
     const refresh = () => {
@@ -32,14 +27,16 @@ const HomePage = () => {
         setRes(resultData.results);
         setTotalPages(resultData.totalPages);
       });
-    }
+    };
     refresh();
   }, [sortToggle, minSalary, maxSalary, page, requestUpdate]);
 
   return (
     <Layout>
       <Alerts setStatus={setStatus} status={status} />
-      <Text mt={2} mr={2} align={"right"}>{userLanguage}</Text>
+      <Text mt={2} mr={2} align={'right'}>
+        {userLanguage}
+      </Text>
       <Container maxWidth={'10xl'}>
         <Flex flexWrap={'wrap'} justify="center">
           <Box m={2}>
@@ -56,7 +53,6 @@ const HomePage = () => {
               setMinSalary={setMinSalary}
               maxSalary={maxSalary}
               setMaxSalary={setMaxSalary}
-              reset={reset}
             />
           </Box>
         </Flex>

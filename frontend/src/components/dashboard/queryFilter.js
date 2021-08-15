@@ -19,7 +19,6 @@ export const QueryFilter = ({
   setMinSalary,
   maxSalary,
   setMaxSalary,
-  reset,
 }) => {
   return (
     <Container
@@ -37,14 +36,10 @@ export const QueryFilter = ({
         textAlign={'center'}
         my={5}
       >
-        Filter
+        Live Filter
       </Heading>
 
-      <Stack
-        direction={'column'}
-        as={'form'}
-        spacing={'12px'}
-      >
+      <Stack direction={'column'} as={'form'} spacing={'12px'}>
         <FormControl>
           <NumberInput
             size="md"
@@ -91,7 +86,11 @@ export const QueryFilter = ({
           <Button
             m={2}
             onClick={() => {
-              reset();
+              if (minSalary || maxSalary) {
+                setMaxSalary('');
+                setMinSalary('');
+                setPage(0);
+              }
             }}
           >
             {'Reset'}
