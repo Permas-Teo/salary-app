@@ -5,7 +5,7 @@ from pydantic import BaseModel, validator
 class UserBase(BaseModel):
     login: Optional[str] = None
     name: Optional[str] = None
-    salary: Optional[float] = 0.0
+    salary: Optional[float] = None
 
     @validator('salary')
     def salary_positive(cls, v):
