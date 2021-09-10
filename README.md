@@ -1,6 +1,12 @@
 # salary-app
 
-Submission for TAP ESTL Application 2021, due on 17th August.
+Submission for TAP ESTL Application 2021.
+
+## Credits
+
+This project was bootstrapped with Create React App.
+
+Navigation Bar component referenced from https://chakra-templates.dev/.
 
 ## 1. Setup Instructions
 
